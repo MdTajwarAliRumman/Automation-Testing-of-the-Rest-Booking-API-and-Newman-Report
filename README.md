@@ -9,6 +9,22 @@ This project provides an example of utilizing Postman for API testing, including
 - Pre-request scripts for data setup
 - Test scripts for assertions and validations
 
+## API Documentation:
+- https://documenter.getpostman.com/view/13082503/2sA2xmUAJ1
+  
+### **Technology used:**
+- Postman
+- Newman
+
+### **Prerequisite:**
+- Node Js
+- Newman
+- Newman Html Report Library
+
+### **Installation**
+
+1. Postman: If you haven't already, [download and install Postman.](https://www.postman.com/downloads/)
+2. Clone the repository:
 
  ```console 
   git clone https://github.com/MdTajwarAliRumman/MdTajwarAliRumman-Automation-Testing-of-the-Rest-Booking-API-and-Newman-Report.git
@@ -40,3 +56,51 @@ This project provides an example of utilizing Postman for API testing, including
 8. View Results:
     -   Once the tests are complete, view the results in the Runner tab.
     -   Detailed test results can be viewed for each request.
+  
+## **Testing**
+
+## Test Case Scenarios:
+
+## _**1. Create New Booking**_
+
+### Request URL: https://restful-booker.herokuapp.com/booking/
+### Request Method: POST
+### Pre-request Script:
+
+```console 
+     var firstName = pm.variables.replaceIn("{{$randomFirstName}}")
+     console.log(firstName)
+     pm.environment.set("firstName", firstName)
+     
+     var lastName = pm.variables.replaceIn("{{$randomLastName}}")
+     console.log(lastName)
+     pm.environment.set("lastName", lastName)
+     
+     var totalPrice = pm.variables.replaceIn("{{$randomInt}}")
+     pm.environment.set("totalPrice", totalPrice)
+     console.log(totalPrice)
+     
+     var depositPaid = pm.variables.replaceIn("{{$randomBoolean}}")
+     pm.environment.set("depositPaid", depositPaid)
+     console.log(depositPaid)
+     
+     var additionalNeeds = pm.variables.replaceIn("{{$randomProduct}}")
+     pm.environment.set("additionalNeeds", additionalNeeds)
+     console.log(additionalNeeds)
+     
+     // date checkin
+     const moment = require("moment")
+     const today = moment()
+     pm.environment.set("checkin", today.format("YYYY-MM-DD"))
+     // date checkout
+     pm.environment.set("checkout", today.add(5,'d').format("YYYY-MM-DD"))
+     console.log(today.format("YYYY-MM-DD"))
+     
+     
+     // future date example
+     //pm.environment.set("checkin", today.add(5,"d").add(1,"M").format("YYYY-MM-DD"))
+     
+     // past date example
+     //pm.environment.set("checkin", today.subtract(5,"d").subtract(1,"M").format("YYYY-MM-DD"))
+
+ ```
