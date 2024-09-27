@@ -1,0 +1,681 @@
+{
+	"info": {
+		"_postman_id": "fb16efc7-4d2a-4974-8566-f4b1533f3519",
+		"name": "Booking",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36290515"
+	},
+	"item": [
+		{
+			"name": "Create Booking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json()\r",
+							"pm.environment.set(\"id\",jsonData.bookingid)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var firstName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+							"console.log(firstName)\r",
+							"pm.environment.set(\"firstName\", firstName)\r",
+							"\r",
+							"var lastName = pm.variables.replaceIn(\"{{$randomLastName}}\")\r",
+							"console.log(lastName)\r",
+							"pm.environment.set(\"lastName\", lastName)\r",
+							"\r",
+							"var totalPrice = pm.variables.replaceIn(\"{{$randomInt}}\")\r",
+							"pm.environment.set(\"totalPrice\", totalPrice)\r",
+							"console.log(totalPrice)\r",
+							"\r",
+							"var depositPaid = pm.variables.replaceIn(\"{{$randomBoolean}}\")\r",
+							"pm.environment.set(\"depositPaid\", depositPaid)\r",
+							"console.log(depositPaid)\r",
+							"\r",
+							"var additionalNeeds = pm.variables.replaceIn(\"{{$randomProduct}}\")\r",
+							"pm.environment.set(\"additionalNeeds\", additionalNeeds)\r",
+							"console.log(additionalNeeds)\r",
+							"\r",
+							"// date checkin\r",
+							"const moment = require(\"moment\")\r",
+							"const today = moment()\r",
+							"pm.environment.set(\"checkin\", today.format(\"YYYY-MM-DD\"))\r",
+							"// date checkout\r",
+							"pm.environment.set(\"checkout\", today.add(5,'d').format(\"YYYY-MM-DD\"))\r",
+							"console.log(today.format(\"YYYY-MM-DD\"))\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"// future date example\r",
+							"//pm.environment.set(\"checkin\", today.add(5,\"d\").add(1,\"M\").format(\"YYYY-MM-DD\"))\r",
+							"\r",
+							"// past date example\r",
+							"//pm.environment.set(\"checkin\", today.subtract(5,\"d\").subtract(1,\"M\").format(\"YYYY-MM-DD\"))\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"firstname\" : \"{{firstName}}\",\r\n\t\"lastname\" : \"{{lastName}}\",\r\n\t\"totalprice\" : {{totalPrice}},\r\n\t\"depositpaid\" : {{depositPaid}},\r\n\t\"bookingdates\" : {\r\n    \t\"checkin\" : \"{{checkin}}\",\r\n    \t\"checkout\" : \"{{checkout}}\"\r\n\t},\r\n\t\"additionalneeds\" : \"{{additionalNeeds}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/booking",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Booking Details by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statusCode= pm.response.code\r",
+							"console.log(statusCode)\r",
+							"\r",
+							"switch(statusCode){\r",
+							"    case 200:\r",
+							"        var jsonData = pm.response.json()\r",
+							"\r",
+							"        pm.test(\"OK, this status code indicates the request was successful and server returned requested data.\", function(){\r",
+							"            pm.response.to.have.status(200);\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"First Name Validation\", function(){\r",
+							"        pm.expect(jsonData.firstname).to.eql(pm.environment.get(\"firstName\"))  \r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Last Name Validation\", function(){\r",
+							"            pm.expect(jsonData.lastname).to.eql(pm.environment.get(\"lastName\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Total Price Validation\", function(){\r",
+							"        pm.expect(jsonData.totalprice.toString()).to.eql(pm.environment.get(\"totalPrice\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Deposit Paid Validation\", function(){\r",
+							"            pm.expect(jsonData.depositpaid.toString()).to.eql(pm.environment.get(\"depositPaid\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Check in Validation\", function(){\r",
+							"            pm.expect(jsonData.bookingdates.checkin).to.eql(pm.environment.get(\"checkin\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Check out Validation\", function(){\r",
+							"            pm.expect(jsonData.bookingdates.checkout).to.eql(pm.environment.get(\"checkout\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Additional needs Validation\", function(){\r",
+							"            pm.expect(jsonData.additionalneeds).to.eql(pm.environment.get(\"additionalNeeds\"))\r",
+							"        })\r",
+							"    break;\r",
+							"\r",
+							"    case 201:\r",
+							"        pm.test(\"Created: This status code indicates that the resource was generated by the server and the request was successful.\", function(){\r",
+							"            pm.response.to.have.status(201);\r",
+							"        })   \r",
+							"    break;\r",
+							"    \r",
+							"    case 400:\r",
+							"        pm.test(\"Bad Request: This status code indicates that there was an invalid request.\")\r",
+							"    break;\r",
+							"\r",
+							"    case 401:\r",
+							"        pm.test(\"Unauthorized: This status code means that the request was it is not authorized to access the requested resource \")\r",
+							"    break;\r",
+							"    case 403:\r",
+							"        pm.test(\"Forbidden: This status code means that the client is authenticated but not authorized to access the requested resource \")\r",
+							"    break;\r",
+							"    case 404:\r",
+							"        pm.test(\"Not Found: This status code means that the requestd resource was not found on the server  \")\r",
+							"    break;\r",
+							"\r",
+							"    case 500:\r",
+							"    pm.test(\"Server Error: The server encountered an unexpected condition that prohibited it from completing the request, as indicated by this generic error code.\")\r",
+							"    break;\r",
+							"\r",
+							"      break;\r",
+							"    case 502:\r",
+							"    pm.test(\"Bad Gateway: This status code means that an upstream server sent an incorrect answer to a server operating as a gatway or proxy.\")\r",
+							"    break;\r",
+							"\r",
+							"      break;\r",
+							"    case 503:\r",
+							"    pm.test(\"Server Unavailable: the server cannot process a request for a short while, it returns the status code Server Unavailable. When the server is undergoing maintenance or during times of high demand, it is frequently observed\")\r",
+							"    break;\r",
+							"\r",
+							"    default:\r",
+							"        pm.test(\"Something Went Wrong.......!!\")\r",
+							"\r",
+							"}\r",
+							"    "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/booking/{{id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"booking",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Token For Authentication",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json()\r",
+							"\r",
+							"pm.environment.set(\"token\",jsonData.token)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"username\": \"admin\",\r\n\t\"password\": \"password123\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Booking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var status = pm.response.code\r",
+							"\r",
+							"if(status==200){\r",
+							"   pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"}); \r",
+							"}\r",
+							"else if(status==404){\r",
+							"    pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"}); \r",
+							"}else if(status==403){\r",
+							"    pm.test(\"Status code is 403\", function () {\r",
+							"    pm.response.to.have.status(403);\r",
+							"}); \r",
+							"}\r",
+							"else(\"Something went wrong...........!\")"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var firstName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+							"console.log(firstName)\r",
+							"pm.environment.set(\"firstName\", firstName)\r",
+							"\r",
+							"var lastName = pm.variables.replaceIn(\"{{$randomLastName}}\")\r",
+							"console.log(lastName)\r",
+							"pm.environment.set(\"lastName\", lastName)\r",
+							"\r",
+							"var totalPrice = pm.variables.replaceIn(\"{{$randomInt}}\")\r",
+							"pm.environment.set(\"totalPrice\", totalPrice)\r",
+							"console.log(totalPrice)\r",
+							"\r",
+							"var depositPaid = pm.variables.replaceIn(\"{{$randomBoolean}}\")\r",
+							"pm.environment.set(\"depositPaid\", depositPaid)\r",
+							"console.log(depositPaid)\r",
+							"\r",
+							"var additionalNeeds = pm.variables.replaceIn(\"{{$randomProduct}}\")\r",
+							"pm.environment.set(\"additionalNeeds\", additionalNeeds)\r",
+							"console.log(additionalNeeds)\r",
+							"\r",
+							"// date checkin\r",
+							"const moment = require(\"moment\")\r",
+							"const today = moment()\r",
+							"pm.environment.set(\"checkin\", today.format(\"YYYY-MM-DD\"))\r",
+							"// date checkout\r",
+							"pm.environment.set(\"checkout\", today.add(5,'d').format(\"YYYY-MM-DD\"))\r",
+							"console.log(today.format(\"YYYY-MM-DD\"))\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "token={{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"firstname\" : \"{{firstName}}\",\r\n\t\"lastname\" : \"{{lastName}}\",\r\n\t\"totalprice\" : {{totalPrice}},\r\n\t\"depositpaid\" : {{depositPaid}},\r\n\t\"bookingdates\" : {\r\n    \t\"checkin\" : \"{{checkin}}\",\r\n    \t\"checkout\" : \"{{checkout}}\"\r\n\t},\r\n\t\"additionalneeds\" : \"{{additionalNeeds}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/booking/{{id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"booking",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check After Update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statusCode= pm.response.code\r",
+							"console.log(statusCode)\r",
+							"\r",
+							"switch(statusCode){\r",
+							"    case 200:\r",
+							"        var jsonData = pm.response.json()\r",
+							"\r",
+							"        pm.test(\"OK, this status code indicates the request was successful and server returned requested data.\", function(){\r",
+							"            pm.response.to.have.status(200);\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"First Name Validation\", function(){\r",
+							"        pm.expect(jsonData.firstname).to.eql(pm.environment.get(\"firstName\"))  \r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Last Name Validation\", function(){\r",
+							"            pm.expect(jsonData.lastname).to.eql(pm.environment.get(\"lastName\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Total Price Validation\", function(){\r",
+							"        pm.expect(jsonData.totalprice.toString()).to.eql(pm.environment.get(\"totalPrice\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Deposit Paid Validation\", function(){\r",
+							"            pm.expect(jsonData.depositpaid.toString()).to.eql(pm.environment.get(\"depositPaid\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Check in Validation\", function(){\r",
+							"            pm.expect(jsonData.bookingdates.checkin).to.eql(pm.environment.get(\"checkin\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Check out Validation\", function(){\r",
+							"            pm.expect(jsonData.bookingdates.checkout).to.eql(pm.environment.get(\"checkout\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Additional needs Validation\", function(){\r",
+							"            pm.expect(jsonData.additionalneeds).to.eql(pm.environment.get(\"additionalNeeds\"))\r",
+							"        })\r",
+							"    break;\r",
+							"\r",
+							"    case 201:\r",
+							"        pm.test(\"Created: This status code indicates that the resource was generated by the server and the request was successful.\", function(){\r",
+							"            pm.response.to.have.status(201);\r",
+							"        })   \r",
+							"    break;\r",
+							"    \r",
+							"    case 400:\r",
+							"        pm.test(\"Bad Request: This status code indicates that there was an invalid request.\")\r",
+							"    break;\r",
+							"\r",
+							"    case 401:\r",
+							"        pm.test(\"Unauthorized: This status code means that the request was it is not authorized to access the requested resource \")\r",
+							"    break;\r",
+							"    case 403:\r",
+							"        pm.test(\"Forbidden: This status code means that the client is authenticated but not authorized to access the requested resource \")\r",
+							"    break;\r",
+							"    case 404:\r",
+							"        pm.test(\"Not Found: This status code means that the requestd resource was not found on the server  \")\r",
+							"    break;\r",
+							"\r",
+							"    case 500:\r",
+							"    pm.test(\"Server Error: The server encountered an unexpected condition that prohibited it from completing the request, as indicated by this generic error code.\")\r",
+							"    break;\r",
+							"\r",
+							"      break;\r",
+							"    case 502:\r",
+							"    pm.test(\"Bad Gateway: This status code means that an upstream server sent an incorrect answer to a server operating as a gatway or proxy.\")\r",
+							"    break;\r",
+							"\r",
+							"      break;\r",
+							"    case 503:\r",
+							"    pm.test(\"Server Unavailable: the server cannot process a request for a short while, it returns the status code Server Unavailable. When the server is undergoing maintenance or during times of high demand, it is frequently observed\")\r",
+							"    break;\r",
+							"\r",
+							"    default:\r",
+							"        pm.test(\"Something Went Wrong.......!!\")\r",
+							"\r",
+							"}\r",
+							"    "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/booking/{{id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"booking",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Booking Record",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statusCode= pm.response.code\r",
+							"console.log(statusCode)\r",
+							"\r",
+							"switch(statusCode){\r",
+							"    case 200:\r",
+							"        var jsonData = pm.response.json()\r",
+							"\r",
+							"        pm.test(\"OK, this status code indicates the request was successful and server returned requested data.\", function(){\r",
+							"            pm.response.to.have.status(200);\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"First Name Validation\", function(){\r",
+							"        pm.expect(jsonData.firstname).to.eql(pm.environment.get(\"firstName\"))  \r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Last Name Validation\", function(){\r",
+							"            pm.expect(jsonData.lastname).to.eql(pm.environment.get(\"lastName\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Total Price Validation\", function(){\r",
+							"        pm.expect(jsonData.totalprice.toString()).to.eql(pm.environment.get(\"totalPrice\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Deposit Paid Validation\", function(){\r",
+							"            pm.expect(jsonData.depositpaid.toString()).to.eql(pm.environment.get(\"depositPaid\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Check in Validation\", function(){\r",
+							"            pm.expect(jsonData.bookingdates.checkin).to.eql(pm.environment.get(\"checkin\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Check out Validation\", function(){\r",
+							"            pm.expect(jsonData.bookingdates.checkout).to.eql(pm.environment.get(\"checkout\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Additional needs Validation\", function(){\r",
+							"            pm.expect(jsonData.additionalneeds).to.eql(pm.environment.get(\"additionalNeeds\"))\r",
+							"        })\r",
+							"    break;\r",
+							"\r",
+							"    case 201:\r",
+							"        pm.test(\"Created: This status code indicates that the resource was generated by the server and the request was successful.\", function(){\r",
+							"            pm.response.to.have.status(201);\r",
+							"        })   \r",
+							"    break;\r",
+							"    \r",
+							"    case 400:\r",
+							"        pm.test(\"Bad Request: This status code indicates that there was an invalid request.\")\r",
+							"    break;\r",
+							"\r",
+							"    case 401:\r",
+							"        pm.test(\"Unauthorized: This status code means that the request was it is not authorized to access the requested resource \")\r",
+							"    break;\r",
+							"    case 403:\r",
+							"        pm.test(\"Forbidden: This status code means that the client is authenticated but not authorized to access the requested resource \")\r",
+							"    break;\r",
+							"    case 404:\r",
+							"        pm.test(\"Not Found: This status code means that the requestd resource was not found on the server  \")\r",
+							"    break;\r",
+							"\r",
+							"    case 500:\r",
+							"    pm.test(\"Server Error: The server encountered an unexpected condition that prohibited it from completing the request, as indicated by this generic error code.\")\r",
+							"    break;\r",
+							"\r",
+							"      break;\r",
+							"    case 502:\r",
+							"    pm.test(\"Bad Gateway: This status code means that an upstream server sent an incorrect answer to a server operating as a gatway or proxy.\")\r",
+							"    break;\r",
+							"\r",
+							"      break;\r",
+							"    case 503:\r",
+							"    pm.test(\"Server Unavailable: the server cannot process a request for a short while, it returns the status code Server Unavailable. When the server is undergoing maintenance or during times of high demand, it is frequently observed\")\r",
+							"    break;\r",
+							"\r",
+							"    default:\r",
+							"        pm.test(\"Something Went Wrong.......!!\")\r",
+							"\r",
+							"}\r",
+							"    "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/booking/3198",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"booking",
+						"3198"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check After Delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var statusCode= pm.response.code\r",
+							"console.log(statusCode)\r",
+							"\r",
+							"switch(statusCode){\r",
+							"    case 200:\r",
+							"        var jsonData = pm.response.json()\r",
+							"\r",
+							"        pm.test(\"OK, this status code indicates the request was successful and server returned requested data.\", function(){\r",
+							"            pm.response.to.have.status(200);\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"First Name Validation\", function(){\r",
+							"        pm.expect(jsonData.firstname).to.eql(pm.environment.get(\"firstName\"))  \r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Last Name Validation\", function(){\r",
+							"            pm.expect(jsonData.lastname).to.eql(pm.environment.get(\"lastName\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Total Price Validation\", function(){\r",
+							"        pm.expect(jsonData.totalprice.toString()).to.eql(pm.environment.get(\"totalPrice\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Deposit Paid Validation\", function(){\r",
+							"            pm.expect(jsonData.depositpaid.toString()).to.eql(pm.environment.get(\"depositPaid\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Check in Validation\", function(){\r",
+							"            pm.expect(jsonData.bookingdates.checkin).to.eql(pm.environment.get(\"checkin\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Check out Validation\", function(){\r",
+							"            pm.expect(jsonData.bookingdates.checkout).to.eql(pm.environment.get(\"checkout\"))\r",
+							"        })\r",
+							"\r",
+							"        pm.test(\"Additional needs Validation\", function(){\r",
+							"            pm.expect(jsonData.additionalneeds).to.eql(pm.environment.get(\"additionalNeeds\"))\r",
+							"        })\r",
+							"    break;\r",
+							"\r",
+							"    case 201:\r",
+							"        pm.test(\"Created: This status code indicates that the resource was generated by the server and the request was successful.\", function(){\r",
+							"            pm.response.to.have.status(201);\r",
+							"        })   \r",
+							"    break;\r",
+							"    \r",
+							"    case 400:\r",
+							"        pm.test(\"Bad Request: This status code indicates that there was an invalid request.\")\r",
+							"    break;\r",
+							"\r",
+							"    case 401:\r",
+							"        pm.test(\"Unauthorized: This status code means that the request was it is not authorized to access the requested resource \")\r",
+							"    break;\r",
+							"    case 403:\r",
+							"        pm.test(\"Forbidden: This status code means that the client is authenticated but not authorized to access the requested resource \")\r",
+							"    break;\r",
+							"    case 404:\r",
+							"        pm.test(\"Not Found: This status code means that the requestd resource was not found on the server  \")\r",
+							"    break;\r",
+							"\r",
+							"    case 500:\r",
+							"    pm.test(\"Server Error: The server encountered an unexpected condition that prohibited it from completing the request, as indicated by this generic error code.\")\r",
+							"    break;\r",
+							"\r",
+							"      break;\r",
+							"    case 502:\r",
+							"    pm.test(\"Bad Gateway: This status code means that an upstream server sent an incorrect answer to a server operating as a gatway or proxy.\")\r",
+							"    break;\r",
+							"\r",
+							"      break;\r",
+							"    case 503:\r",
+							"    pm.test(\"Server Unavailable: the server cannot process a request for a short while, it returns the status code Server Unavailable. When the server is undergoing maintenance or during times of high demand, it is frequently observed\")\r",
+							"    break;\r",
+							"\r",
+							"    default:\r",
+							"        pm.test(\"Something Went Wrong.......!!\")\r",
+							"\r",
+							"}\r",
+							"    "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/booking/{{id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"booking",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
