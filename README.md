@@ -234,3 +234,84 @@ switch(statusCode){
     "additionalneeds": "Computer"
 }
   ```
+
+## _**3. Create A Token For Authentication.**_
+### Request URL: https://restful-booker.herokuapp.com/auth
+### Request Method: POST
+### Pre-request Script: None
+### Request Body:
+ ```console 
+{
+	"username": "admin",
+	"password": "password123"
+}
+```
+  **Response Body:**
+ ```console 
+{
+    "token": "1c8e138315f64fe"
+}
+```
+
+ ## _**4. Update the Booking Details**_
+### Request URL: https://restful-booker.herokuapp.com/booking/bookingid
+### Request Method: PUT
+### Pre-request Script:
+```console 
+    var firstName = pm.variables.replaceIn("{{$randomFirstName}}")
+	console.log(firstName)
+	pm.environment.set("firstName", firstName)
+	
+	var lastName = pm.variables.replaceIn("{{$randomLastName}}")
+	console.log(lastName)
+	pm.environment.set("lastName", lastName)
+	
+	var totalPrice = pm.variables.replaceIn("{{$randomInt}}")
+	pm.environment.set("totalPrice", totalPrice)
+	console.log(totalPrice)
+	
+	var depositPaid = pm.variables.replaceIn("{{$randomBoolean}}")
+	pm.environment.set("depositPaid", depositPaid)
+	console.log(depositPaid)
+	
+	var additionalNeeds = pm.variables.replaceIn("{{$randomProduct}}")
+	pm.environment.set("additionalNeeds", additionalNeeds)
+	console.log(additionalNeeds)
+	
+	// date checkin
+	const moment = require("moment")
+	const today = moment()
+	pm.environment.set("checkin", today.format("YYYY-MM-DD"))
+	// date checkout
+	pm.environment.set("checkout", today.add(5,'d').format("YYYY-MM-DD"))
+	console.log(today.format("YYYY-MM-DD"))
+```
+  **Request Body:** 
+ ```console 
+  {
+	"firstname" : "{{firstName}}",
+	"lastname" : "{{lastName}}",
+	"totalprice" : {{totalPrice}},
+	"depositpaid" : {{depositPaid}},
+	"bookingdates" : {
+    	"checkin" : "{{checkin}}",
+    	"checkout" : "{{checkout}}"
+	},
+	"additionalneeds" : "{{additionalNeeds}}"
+}
+
+```
+  **Response Body:**
+ ```console 
+ {
+    "firstname": "Alessia",
+    "lastname": "Brekke",
+    "totalprice": 805,
+    "depositpaid": true,
+    "bookingdates": {
+        "checkin": "2024-09-27",
+        "checkout": "2024-10-02"
+    },
+    "additionalneeds": "Pants"
+}
+```
