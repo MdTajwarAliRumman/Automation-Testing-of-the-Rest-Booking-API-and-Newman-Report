@@ -1,4 +1,5 @@
-### **(Note: Get the entire project by downloading the full code from the collection and environment.)**
+### **![image](https://github.com/user-attachments/assets/88046aa6-249d-4b0a-a3bf-6cfb94c0191e)
+(Note: Get the entire project by downloading the full code from the collection and environment.)**
 ## Rest Booking API Testing with Postman & Newman
 This project provides an example of utilizing Postman for API testing, including a set of tests to verify different API endpoints.
 
