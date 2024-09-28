@@ -1,4 +1,4 @@
-### **=>(Note: Get the entire project by downloading the full code from the collection and environment.)**
+### **#(Note: Get the entire project by downloading the full code from the collection and environment.)**
 ## Rest Booking API Testing with Postman & Newman
 This project provides an example of utilizing Postman for API testing, including a set of tests to verify different API endpoints.
 
@@ -11,8 +11,7 @@ This project provides an example of utilizing Postman for API testing, including
 - Test scripts for assertions and validations
 
 ## API Documentation:
-- https://documenter.getpostman.com/view/13082503/2sA2xmUAJ1
-  
+
 ### **Technology used:**
 - Postman
 - Newman
