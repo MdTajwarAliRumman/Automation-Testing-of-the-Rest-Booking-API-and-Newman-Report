@@ -315,3 +315,19 @@ switch(statusCode){
     "additionalneeds": "Pants"
 }
 ```
+## Run Command:  
+- Run Command for Console: 
+```console 
+	newman run Booking.postman_collection.json -e Booking.postman_environment.json
+```
+
+- Run Command for Report: 
+```console 
+	newman run Booking.postman_collection.json -e Booking.postman_environment.json -r cli,htmlextra
+```
+## Newman Report Summary:  
+![github1](https://github.com/user-attachments/assets/b66470f7-92a9-46e3-afaf-925c48538d52)
+![github2](https://github.com/user-attachments/assets/1ff8414a-3be7-47b2-9fa5-f36141fa5ebb)
+![github3](https://github.com/user-attachments/assets/0097e615-60c5-4cc3-8127-2035a41b18c6)
+![github4](https://github.com/user-attachments/assets/f8f25854-3f67-4630-ad3a-b33b6b026b2b)
+
